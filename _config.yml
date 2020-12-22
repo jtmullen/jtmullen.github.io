@@ -1,8 +1,10 @@
 ## General Settings
+title: This is my title
 name: Jonathan's Test Site
 description: Trying out GH Pages
 url: "http://jtmullen.github.io"
-theme: jekyll-theme-minimal
+theme: jekyll-theme-cayman
+show_downloads: false
 markdown: GFM
 
 github_username: jtmullen
