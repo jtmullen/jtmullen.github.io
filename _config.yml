@@ -4,3 +4,9 @@ description: Trying out GH Pages
 url: "http://jtmullen.github.io"
 theme: jekyll-theme-minimal
 markdown: GFM
+
+github_username: jtmullen
+
+social_links:
+  github:  jtmullen
+  linkedIn: in/JTM 
