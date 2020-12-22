@@ -1,1 +1,6 @@
+## General Settings
+name: Jonathan's Test Site
+description: Trying out GH Pages
+url: "http://jtmullen.github.io"
 theme: jekyll-theme-minimal
+markdown: GFM
