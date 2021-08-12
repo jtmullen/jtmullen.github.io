@@ -1,14 +1,28 @@
 ## General Settings
-title: This is my title
-name: Jonathan's Test Site
-description: Trying out GH Pages
+title: Jonathan's Mullen
+author: jtmullen
+copyright: Copyright © 2020-2021
+name: Jonathan Mullen
+description: My Personal Site
+
+baseurl: ""
 url: "http://jtmullen.github.io"
-theme: jekyll-theme-cayman
+favicon: "/img/favicon.ico"
+
+remote_theme: "jtmullen/jekyll-theme-yat"
 show_downloads: false
 markdown: GFM
 
+header_pages:
+  - index.html
+  - about.md
+
 github_username: jtmullen
 
-social_links:
-  github:  jtmullen
-  linkedIn: in/JTM 
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jekyll-spaceship
+  - jekyll-remote-theme
