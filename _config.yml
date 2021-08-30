@@ -11,7 +11,7 @@ favicon: "/img/favicon.ico"
 
 remote_theme: "jtmullen/jekyll-theme-yat"
 show_downloads: false
-markdown: GFM
+markdown: kramdown
 
 header_pages:
   - index.html
