@@ -66,6 +66,5 @@ While not quite all of the desired features were implemented and tested in time 
 
 <p align="center"><i>Brizo Racing at the 2021 American Solar Challenge<br></i></p>
 
-![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https%3A%2F%2Fjtmullen.github.io%2Fsolar%2Fcar%2F2021%2F08%2F28%2FSolar-Car-Steering-Wheel.html)
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
