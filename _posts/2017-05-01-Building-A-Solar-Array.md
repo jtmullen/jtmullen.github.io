@@ -3,14 +3,15 @@ layout: post
 title: Building a Solar Array
 author: Jonathan Mullen
 banner:
-  image: /img/wheel_front.jpg
+  image: /img/solar_module_complete.jpg
   opacity: 0.38
 categories: solar car
 tags:
   - solar car
   - solar
   - array
-  - racing
+  - encapsulation
+  - ISC Blog
 ---
 
 > I originally wrote this post in 2017 for the [Illini Solar Car Blog](https://blog.illinisolarcar.com/) which has gone offline. It is mirrored here to keep this info available. 
