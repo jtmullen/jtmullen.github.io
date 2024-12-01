@@ -50,7 +50,152 @@ const table_identifier = "<!-- AUTO GEN CONTENT -->"
 
 ### Content Template
 
-To more easily create our HTML content we will use Google Apps Script [Templated HTML](https://developers.google.com/apps-script/guides/html/templates) feature. 
+To more easily create our HTML content we will use Google Apps Script [Templated HTML](https://developers.google.com/apps-script/guides/html/templates) feature. In the Google Apps Script editor create a new HTML file, I named it `table.html`. Templated HTML allows you to combine html with google apps script using the special html tag `<? ?>`. Content within the tag is evaluated as apps script while the rest is just html that will be directly put into the output. To create the below file I started by creating the table how I wanted it to look in wordpress between my comment tags. I then copied the html (via the Wordpress html editor) into this html file and added my google apps script on top. 
+
+```html
+<?
+const hex_green = '#32cd32';
+const hex_red = '#ff0000';
+const hex_yellow = '#ffff00';
+const hex_blue = '#0000ff';
+const hex_grey = '#808080';
+const hex_white = '#ffffff';
+?>
+<h3>Status Board</h3>
+<figure class="wp-block-table">
+<table style="width:100%">
+<tr>
+  <th>TEAM</th><th>CLASS</th>
+  <? for ( var i = 0; i < numitems; i++){ ?>
+  <th> <?=i + startnum?> </th>
+  <? } ?>
+</tr>
+<? for (let i = 0; i < teams.length - 1; i++) {
+  team_data = teams[i+1];
+  if(!team_data[1]){
+    // skip empty row
+    continue;
+  }
+  ?>
+  <tr>
+    <td style="white-space:nowrap;"><a href="<?=team_data[2]?>"><?=team_data[1]?></a></td>
+    <td style="text-align: center;"><?=team_data[0]?></td>
+    <? for( let j = 3; j < (num_items + 3); j++){
+      status = team_data[j];
+      color = hex_white;
+      extracss = ""
+      celltext = ""
+      if(status.includes("GN")){
+        color = hex_green;
+        celltext = "G";
+      }else if(status.includes("YE")){
+        color = hex_yellow;
+        celltext = "Y";
+      }else if(status.includes("BU")){
+        color = hex_blue;
+        celltext = "B";
+        extracss = "color: white;border-color:#4b4f58;"
+      }else if(status.includes("RD")){
+        color = hex_red;
+        celltext = "R";
+        extracss = "color: white;border-color:#4b4f58;"
+      }else if(status.includes("GY")){
+        color = hex_grey;
+      }
+
+      ?>
+      <td bgcolor="<?=color?>" title="<?=teams[0][j]?>" style="text-align: center;<?!=extracss?>"><?=celltext?></td>
+
+    <?}?>
+    </tr>
+<?}?>
+</table></figure>
+```
+
+Lets go through this piece by piece. First we have some const definitions, these are in the special google apps script tag since they are variables we want to use in our google apps script parts below. 
+```html
+<?
+const hex_green = '#32cd32';
+const hex_red = '#ff0000';
+const hex_yellow = '#ffff00';
+const hex_blue = '#0000ff';
+const hex_grey = '#808080';
+const hex_white = '#ffffff';
+?>
+```
+
+Next we have our header and the start of our table. These are just html since we want them recreated exactly in the final product: 
+```html
+<h3>Status Board</h3>
+<figure class="wp-block-table">
+<table style="width:100%">
+  ```
+
+Within the table, the first thing we create is our header row. In my case this is two static columns followed by the numbers 1-X where X is definied from the spreadsheet. The `numitems` variable is definied in our Google Apps Script and passed when the template is evaluated, this will be shown later. 
+```html
+<tr>
+  <th>TEAM</th><th>CLASS</th>
+  <? for ( var i = 0; i < numitems; i++){ ?>
+  <th> <?=i?> </th>
+  <? } ?>
+</tr>
+```
+
+Next we will iterate through every team and create the row with their status. `teams` is another variable we will pass to the template. It is an array of all the teams and their status information. Within our for loop we first extract the information for the team we are processing. We then skip the iteration if the row is empty - sometimes rows end up empty when a team drops out or extra empty rows exist at the end of the table, so we just want to skip that so the empty row doesn't make it to the website. 
+
+```html
+<? for (let i = 0; i < teams.length - 1; i++) {
+  team_data = teams[i+1];
+  if(!team_data[1]){
+    // skip empty row
+    continue;
+  }
+  ?>
+```
+
+Now that we have a non-empty team row we will create the row for the team. We have defined our first two columns to show the team name (which will link to their website) and the class they are competing in. This data can be found in our teams array in the first 3 columns, so first we put this data in place. Next we loop through the third to final columns in order to place the statuses. This is very specific to our setup, I am simply translating the text used in dropdowns on the spreadsheet ("GN", "YE", "BU", etc) to the text we want in the table cell on the website as well as the color of the cells. Once we determine this info we create the actual `<td>` table data cell and continue on to the next. 
+```html
+  <tr>
+    <td style="white-space:nowrap;"><a href="<?=team_data[2]?>"><?=team_data[1]?></a></td>
+    <td style="text-align: center;"><?=team_data[0]?></td>
+    <? for( let j = 3; j < (num_items + 3); j++){
+      status = team_data[j];
+      color = hex_white;
+      extracss = ""
+      celltext = ""
+      if(status.includes("GN")){
+        color = hex_green;
+        celltext = "G";
+      }else if(status.includes("YE")){
+        color = hex_yellow;
+        celltext = "Y";
+      }else if(status.includes("BU")){
+        color = hex_blue;
+        celltext = "B";
+        extracss = "color: white;border-color:#4b4f58;"
+      }else if(status.includes("RD")){
+        color = hex_red;
+        celltext = "R";
+        extracss = "color: white;border-color:#4b4f58;"
+      }else if(status.includes("GY")){
+        color = hex_grey;
+      }
+      ?>
+      <td bgcolor="<?=color?>" title="<?=teams[0][j]?>" style="text-align: center;<?!=extracss?>"><?=celltext?></td>
+
+    <?}?>
+    </tr>
+<?}?>
+```
+
+Finally, we close the table html tags. 
+```html
+</table></figure>
+```
+
+### Getting the Executed Template
+
+
 
 ### Pushing to Wordpress
 
