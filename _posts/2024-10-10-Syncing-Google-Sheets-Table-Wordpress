@@ -67,7 +67,7 @@ const hex_white = '#ffffff';
 <tr>
   <th>TEAM</th><th>CLASS</th>
   <? for ( var i = 0; i < numitems; i++){ ?>
-  <th> <?=i + startnum?> </th>
+  <th> <?=i?> </th>
   <? } ?>
 </tr>
 <? for (let i = 0; i < teams.length - 1; i++) {
@@ -195,9 +195,21 @@ Finally, we close the table html tags.
 
 ### Getting the Executed Template
 
+Once our template is done we can use it in our Google Apps Script code as shown below. We have determined the number of items (our array width) and extracted the team data from the spreadsheet. So we create an instance of the template, pass our data, and then evaluate the template with that data. This function will return the html for a completed table with our passed data. 
+```js
+unction generate_table(sheet, num_items){
 
+  var template = HtmlService.createTemplateFromFile('table.html');
+  template.numitems = num_items;
+  template.teams = sheet;
+  return template.evaluate().getContent();
+ 
+}
+```
 
 ### Pushing to Wordpress
+
+
 
 ### Putting it together
 
