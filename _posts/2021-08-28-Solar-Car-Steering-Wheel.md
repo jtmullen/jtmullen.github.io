@@ -6,7 +6,7 @@ author: Jonathan Mullen
 banner:
   image: /img/wheel_front.jpg
   opacity: 0.38
-categories: solar car
+categories: solar_car
 tags:
   - solar car
   - steering wheel

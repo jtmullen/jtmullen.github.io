@@ -5,7 +5,7 @@ author: Jonathan Mullen
 banner:
   image: /img/solar_module_complete.jpg
   opacity: 0.38
-categories: solar car
+categories: solar_car
 tags:
   - solar car
   - solar
