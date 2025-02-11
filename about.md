@@ -9,7 +9,7 @@ Taken from the rescue vehicle after I helped complete a trackside repair</i></p>
 
 ## ABOUT ME
 
-I am an embedded systems engineer (hardware, firmware, & software) with experience working on embedded systems for various applications including battery systems, solar vehicles, construction equipment, agricultural equipment, and prosthetics. 
+I am an embedded systems engineer (hardware, firmware, & software) with experience working on embedded systems for various applications including solar module level power electronics, battery systems, solar vehicles, construction equipment, agricultural equipment, and prosthetics. 
 
 Additionally, I have experience in systems engineering, designing electrical controller networks, and electo-mechanical integration.
 
