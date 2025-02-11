@@ -197,7 +197,7 @@ Finally, we close the table html tags.
 
 Once our template is done we can use it in our Google Apps Script code as shown below. We have determined the number of items (our array width) and extracted the team data from the spreadsheet. So we create an instance of the template, pass our data, and then evaluate the template with that data. This function will return the html for a completed table with our passed data. 
 ```js
-unction generate_table(sheet, num_items){
+function generate_table(sheet, num_items){
 
   var template = HtmlService.createTemplateFromFile('table.html');
   template.numitems = num_items;
@@ -207,11 +207,83 @@ unction generate_table(sheet, num_items){
 }
 ```
 
-### Pushing to Wordpress
+### Connecting to Wordpress
 
+There are two things we need to be able to do to update the content in our page. First, we need to get the latest page content (so we can change it) and then we need to push our updates to the site. We will do this with Google Apps Scripts [UrlFetchApp](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app) which can be used to make simple HTTP requests. 
 
+First, we need the HTTP header for our requests. This is simply the authorization plus some info about our request. _Note: Google Apps Script doesn't have a great way to manage secrets like passwords/api keys. You can use [Properties Service](https://developers.google.com/apps-script/reference/properties) which is a little better than putting it right in the code._
+```js
+  token = Utilities.base64EncodeWebSafe(wordpress_user+":"+wp_password);
+  header = {
+    'Authorization': 'Basic '+token, 
+	  "User-Agent" : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+	  "Accept" : "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+	  "Accept-Encoding" : "gzip, deflate, br",
+	  "Accept-Language" : "en-US,en;q=0.5"
+    };
+```
+
+To get the page content we just do a simple get request (remember, our url specifies which page we are interacting with). 
+```js
+function getPageContent(){
+  // Get Current Page
+  var get_options = {
+    'method' : 'get',
+    'headers' : header
+  };
+  var response = UrlFetchApp.fetch(api_url, get_options);
+  var page_content = JSON.parse(response.getContentText()).content.rendered;
+  return [response.getResponseCode(), page_content];
+}
+```
+
+Updating the page content is a little more complex. This is a post request which requires the additional data with the request. Specifically, we need to tell wordpress that we want to edit the page and provide the new content. 
+```js
+function updatePageContent(content){
+  var data = {
+    'context': 'edit',
+    'content' : content
+  };
+
+  var post_options = {
+    'method' : 'post',
+    'headers' : header,
+    'payload' : data
+  };
+
+  var response = UrlFetchApp.fetch(api_url, post_options);
+  return response.getResponseCode();
+}
+```
 
 ### Putting it together
+
+Alright, so now we have all the pieces individually. We just need to put it together. Our function might look something like this: 
+
+```js
+function updateTable(){
+
+  // First, get our spreadsheet data
+  var spreadsheet = SpreadsheetApp.getActive(); // Get the spreadsheet
+  var sheet_data = spreadsheet.getSheetByName("[sheetname]").getDataRangle().getValues(); // Get the data from the correct sheet
+  var num_items = [number]; // Indicate how many items there are. In my case this came from the spreadsheet, up to you depending on use case
+  
+  // Next, Evaluate the Template
+  new_table = generate_table(sheet_data, num_items);
+  
+  // Get the current page content
+  var current_content = getPageContent();
+  
+  // Create the new content
+  new_table = table_identifier + new_table + table_identifier; // Make sure new content has the identifiers
+  var regexpr = table_identifier + "?(.*?)" + table_identifier; // Create Regular Expression Match String
+  var new_content = current_content.replace(regexpr, new_table);  // Create new content using regex replacement
+  
+  // Update the content on the site
+  updatePageContent(new_content);
+}
+
+```
 
 ### Triggers
 
@@ -230,4 +302,6 @@ Google Apps Script will automatically run the `onOpen()` function when the sprea
 
 For our second trigger we navigate to the Triggers page in Google Apps Script and add a new time driven trigger. Select the interval you want and link it to the `updateTable()` function. 
 
-### Improving UI
+## Wrap Update
+
+This was an overview of a generalized version of what I have implemeted to update the table on the [ASC/FSGP Pre-Event Status Board](https://www.americansolarchallenge.org/the-competition/2025-formula-sun-grand-prix/fsgp-2025-pre-event-team-status/). Wordpress and Google Sheets were already in use and their use is ingrained in the workflows of the organization so changing either is a lot of work - a lot more work than connecting them together like this. It is not the cleanest solution, has some limitations (don't edit the page in the block editor!), but it works most of the time, saves time, and gets the info out faster. 
